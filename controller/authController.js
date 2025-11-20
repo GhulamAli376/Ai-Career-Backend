@@ -51,7 +51,7 @@ export const signUpController = async (req, res) => {
     });
 
     // Generate OTP
-    const otp = Math.floor(100000 + Math.random() * 900000);
+    const otp = Math.floor(100000 + Math.random() * 9000);
     const expiresAt = new Date(Date.now() + 1 * 60 * 1000);
 
     const mailOptions = {

@@ -42,7 +42,7 @@ export const aiRoadMap=async (req, res) => {
         headers: {
           "Content-Type": "application/json",
           "Authorization":
-            "Bearer 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",
+            "Bearer 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",
           "HTTP-Referer": "http://localhost:5173",
         },
         body: JSON.stringify({
