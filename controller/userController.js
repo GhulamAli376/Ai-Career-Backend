@@ -20,7 +20,9 @@ export const aiRoadMap=async (req, res) => {
     }
 
     // Check if roadmap already exists
-    const existing = await Roadmap.findOne({ field, skillLevel });
+  const existing = await Roadmap.findOne({ field, skillLevel });
+
+
     if (existing) {
       console.log("✅ Returning cached roadmap from database");
       existing.hits += 1;
@@ -34,7 +36,7 @@ export const aiRoadMap=async (req, res) => {
       });
     }
 
-    // Otherwise, generate a new roadmap using OpenRouter
+
     const response = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
       {
@@ -42,7 +44,7 @@ export const aiRoadMap=async (req, res) => {
         headers: {
           "Content-Type": "application/json",
           "Authorization":
-            "Bearer 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",
+            `Bearer ${process.env.OPENROUTER_API_KEY}`,
           "HTTP-Referer": "http://localhost:5173",
         },
         body: JSON.stringify({
@@ -69,10 +71,20 @@ export const aiRoadMap=async (req, res) => {
 
     // Save the roadmap
    await Roadmap.findOneAndUpdate(
-  { prompt: userInput }, // 👈 ye line important hai
-  { name, field, skillLevel, prompt: userInput, response: roadmap, lastUsed: new Date() },
+  { field, skillLevel },    // ✔ find roadmap by unique index
+  {
+    name,
+    field,
+    skillLevel,
+    prompt: userInput,
+    response: roadmap,
+    lastUsed: new Date(),
+  },
   { upsert: true, new: true, setDefaultsOnInsert: true }
 );
+
+console.log("FINAL ROADMAP:", roadmap);
+
 
 
     res.json({ roadmap, cached: false });
